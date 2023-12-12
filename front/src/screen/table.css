@@ -1,0 +1,47 @@
+@media (max-width: 772px) {
+    .resultTable {
+        background-color: white;
+        width: 35%;
+        left: 35%;
+        top: 60%;
+        position: absolute;
+        border-radius: 15px;
+        height: 40%;
+    }
+
+    .table-body {
+        text-align: center;
+    }
+}
+
+@media (min-width: 772px) {
+    .resultTable {
+        background-color: white;
+        width: 35%;
+        left: 35%;
+        top: 60%;
+        position: absolute;
+        border-radius: 15px;
+        height: 40%;
+    }
+
+    .table-body {
+        text-align: center;
+    }
+}
+
+@media (min-width: 1111px) {
+    .resultTable {
+        background-color: white;
+        width: 35%;
+        left: 35%;
+        top: 60%;
+        position: absolute;
+        border-radius: 15px;
+        height: 40%;
+    }
+
+    .table-body{
+        text-align: center;
+    }
+}

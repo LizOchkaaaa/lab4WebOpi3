@@ -1,0 +1,218 @@
+@media (max-width: 772px)  {
+    .container2 {
+        background-color: white;
+        width: 85%;
+        max-width: 50%;
+        left: 45%;
+        top: 20%;
+        position: absolute;
+        border-radius: 20px;
+        height: 30%;
+    }
+
+    .p1 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .chooseX {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .X {
+        position: absolute;
+        top: 25px;
+        left: 100px;
+    }
+
+    .p2 {
+        position: absolute;
+        top: 30%;
+        left: 10px;
+    }
+
+    .inputY {
+        position: absolute;
+        top: 38%;
+        left: 14%;
+    }
+
+    .p3 {
+        position: absolute;
+        top: 48%;
+        left: 10px;
+    }
+
+    .chooseR {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .R {
+        position: absolute;
+        top: 120px;
+        left: 100px;
+    }
+    .formErrors{
+        position: absolute;
+        left: 40%;
+        top: 25%;
+    }
+
+    .button {
+        position: absolute;
+        flex-shrink: 0;
+        top: 80%;
+        left: 45%;
+        accent-color: #cdc684;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 772px)  {
+    .container2 {
+        background-color: white;
+        width: 85%;
+        max-width: 50%;
+        left: 45%;
+        top: 20%;
+        position: absolute;
+        border-radius: 20px;
+        height: 30%;
+    }
+
+    .p1 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .chooseX {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .X {
+        position: absolute;
+        top: 25px;
+        left: 100px;
+    }
+
+    .p2 {
+        position: absolute;
+        top: 30%;
+        left: 10px;
+    }
+
+    .inputY {
+        position: absolute;
+        top: 38%;
+        left: 14%;
+    }
+
+    .p3 {
+        position: absolute;
+        top: 48%;
+        left: 10px;
+    }
+
+    .chooseR {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .R {
+        position: absolute;
+        top: 120px;
+        left: 100px;
+    }
+    .formErrors{
+        position: absolute;
+        left: 40%;
+        top: 25%;
+    }
+
+    .button {
+        position: absolute;
+        flex-shrink: 0;
+        top: 80%;
+        left: 45%;
+        accent-color: #cdc684;
+        cursor: pointer;
+    }
+}
+
+@media (min-width: 1111px)  {
+    .container2 {
+        background-color: white;
+        width: 85%;
+        max-width: 50%;
+        left: 45%;
+        top: 20%;
+        position: absolute;
+        border-radius: 20px;
+        height: 30%;
+    }
+
+    .p1 {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .chooseX {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .X {
+        position: absolute;
+        top: 25px;
+        left: 100px;
+    }
+
+    .p2 {
+        position: absolute;
+        top: 30%;
+        left: 10px;
+    }
+
+    .inputY {
+        position: absolute;
+        top: 38%;
+        left: 14%;
+    }
+
+    .p3 {
+        position: absolute;
+        top: 48%;
+        left: 10px;
+    }
+
+    .chooseR {
+        display:inline-block;
+        margin-right: 10px;
+    }
+
+    .R {
+        position: absolute;
+        top: 120px;
+        left: 100px;
+    }
+    .formErrors{
+        position: absolute;
+        left: 40%;
+        top: 25%;
+    }
+
+    .button {
+        position: absolute;
+        flex-shrink: 0;
+        top: 80%;
+        left: 45%;
+        accent-color: #cdc684;
+        cursor: pointer;
+    }
+}

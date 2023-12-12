@@ -1,0 +1,32 @@
+@media (max-width: 772px) {
+    .frame2 {
+        position: relative;
+        top: 90px;
+        left: 10%;
+        width: 500px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 772px) {
+    .frame2 {
+        position: relative;
+        top: 90px;
+        left: 10%;
+        width: 500px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1111px) {
+    .frame2 {
+        position: relative;
+        top: 90px;
+        left: 10%;
+        width: 500px;
+        height: 400px;
+    }
+}
+.svgErrors{
+    color: red;
+}
