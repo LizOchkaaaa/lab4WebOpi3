@@ -25,6 +25,9 @@ class MainPage extends Component{
         localStorage.setItem("user", undefined);
         window.location = "/"
     }
+    clear(){
+        this.props.dispatch(this.props.coordinates)
+    }
     render(){
         return(
             <div>
@@ -34,6 +37,7 @@ class MainPage extends Component{
                 <button className="return" onClick={this.logout}
                         >Выйти
                 </button>
+
             </div>
         )
 

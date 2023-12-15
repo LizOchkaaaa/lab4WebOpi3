@@ -6,6 +6,7 @@ import com.example.back.service.ResultManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -19,13 +20,14 @@ public class CheckAreaController {
     }
 
     @PostMapping
-    public Result add(@RequestBody ResultsDto resultsDto, @RequestAttribute Timestamp startTime, Authentication authentication) {
-        return resultManager.addHit(resultsDto, authentication.getName() , startTime);
+    public Result add(@RequestBody ResultsDto resultsDto, @RequestAttribute Timestamp startTime,@RequestAttribute Authentication authorization) {
+        return resultManager.addHit(resultsDto, authorization.getName() , startTime);
     }
 
     @GetMapping
-    public List<Result> getHits() {
+    public List<Result> getHits(@RequestAttribute Authentication authorization) {
 
-        return (List<Result>) resultManager.getHits();
+        return  resultManager.getHits(authorization.getName());
     }
+
 }

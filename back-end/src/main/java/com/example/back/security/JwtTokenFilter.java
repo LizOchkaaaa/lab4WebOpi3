@@ -1,12 +1,14 @@
 package com.example.back.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import com.example.back.repository.TokenRepository;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -14,55 +16,54 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.sql.Timestamp;
 
-import static javax.crypto.Cipher.SECRET_KEY;
-
+@Component
+@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    private final JwtTokenUtil jwtService;
+    private final UserDetailsService userDetailsService;
+    private final TokenRepository tokenRepository;
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = extractToken(request); // Извлечение токена из запроса
-
-        if (token != null && validateToken(token)) {
-            Authentication auth = getAuthentication(token); // Получение аутентификации из токена
-
-            if (auth != null) {
-                SecurityContextHolder.getContext().setAuthentication(auth);
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        if (request.getServletPath().contains("/login") || request.getServletPath().contains("/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String username;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        jwt = authHeader.substring(7);
+        username = jwtService.extractUsername(jwt);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            var isTokenValid = tokenRepository.findByToken(jwt)
+                    .map(t -> !t.isExpired() && !t.isRevoked())
+                    .orElse(false);
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+                request.setAttribute("authorization", authToken);
+                request.setAttribute("startTime", new Timestamp(System.currentTimeMillis()));
             }
         }
-
         filterChain.doFilter(request, response);
-    }
-
-    private String extractToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Удаление "Bearer " из строки заголовка
-        }
-        return null;
-    }
-
-
-    private Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser().setSigningKey(String.valueOf(SECRET_KEY)).parseClaimsJws(token).getBody();
-
-        // Извлечение информации из токена, например, username, roles и других данных
-        String username = claims.getSubject();
-
-        if (username != null) {
-            // Создание объекта аутентификации на основе информации из токена
-            return new UsernamePasswordAuthenticationToken(username, null);
-        }
-        return null;
-    }
-    private boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(String.valueOf(SECRET_KEY)).parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            // Обработка ошибок при проверке токена
-            return false;
-        }
     }
 }

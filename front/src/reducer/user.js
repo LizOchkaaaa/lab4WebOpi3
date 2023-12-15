@@ -5,14 +5,16 @@ import {
     SET_SIGN_IN,
     SET_LOGIN,
     SET_PASSWORD,
-    SET_ANSWER
+    SET_ANSWER,
+
 } from "../actions/userAction";
 
 const initialState = {
     login: '',
     password: '',
     isLogin: false,
-    userAnswer: ""
+    userAnswer: "",
+
 };
 
 

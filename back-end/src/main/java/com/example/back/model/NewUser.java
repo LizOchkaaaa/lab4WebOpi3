@@ -1,4 +1,5 @@
 package com.example.back.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +24,9 @@ public class NewUser implements UserDetails {
     private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Token> tokens;
 
 
     public NewUser() {

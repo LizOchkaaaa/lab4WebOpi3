@@ -52,11 +52,14 @@ export function registration(user, event) {
                         type: SET_SIGN_IN,
                         payload: true
                     })
-                    window.location = '/main'
-                } else {
                     dispatch({
-                        type: SET_ANSWER,
-                        payload: "Пользователь с таким логином уже зарегистрирован",
+                        type: SET_LOGIN,
+                        payload: '',
+
+                    });
+                    dispatch({
+                        type: SET_PASSWORD,
+                        payload: '',
                     });
                 }
             })
@@ -67,31 +70,25 @@ export function registration(user, event) {
                     payload: answer,
                 });
             });
-        dispatch({
-            type: SET_LOGIN,
-            payload: '',
 
-        });
-        dispatch({
-            type: SET_PASSWORD,
-            payload: '',
-        });
     }
 }
 export function login(user, event) {
     event.preventDefault(event);
-    let header = base64_encode(user.login + ':' + user.password);
+    let bodyFormData = new FormData();
+    bodyFormData.append('username', user.login);
+    bodyFormData.append('password', user.password);
     return dispatch => {
         axios({
-            method: "POST",
+            method: "post",
             url: 'http://localhost:8585/login',
-            headers: { 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + header},
+            data: bodyFormData,
+            headers: { 'Content-Type': 'application/json' },
         })
             .then(result => {
 
                 if (result.data) {
-                    localStorage.setItem("user", header);
+                    localStorage.setItem("user", "Bearer " + result.data);
                     dispatch({
                         type: SET_ANSWER,
                         payload: "Вы успешно зарегистрировались"
@@ -112,23 +109,50 @@ export function login(user, event) {
                 let status = error.response ? error.response.status : null;
                 let answer = 'Error';
                 if (status === 415 || status === 400) answer = 'Ошибка';
-                if (status === 401) answer = 'Вы не прошли аутентификацию';
+                if (status === 401) {
+                    answer = 'Вы не прошли аутентификацию';
+                    localStorage.removeItem("user");
+                }
                 if (status === 404) answer = 'Потеряно соединение';
                 dispatch({
                     type: SET_ANSWER,
                     payload: answer,
                 });
             });
+    };
+}
+export function authorization() {
 
-        dispatch({
-            type: SET_LOGIN,
-            payload: '',
-        });
+    return dispatch => {
+        axios({
+            method: "get",
+            url: 'http://localhost:8585/authorization',
+            headers: { 'Content-Type': 'application/json',
+            'Authorization' : localStorage.getItem("user")},
+        })
+            .then(result => {
 
-        dispatch({
-            type: SET_PASSWORD,
-            payload: '',
-        });
+                if (result.data) {
+                    if (window.location.href !== 'http://localhost:3000/main')
+                    window.location = '/main'
+                }
+            })
+            .catch(error => {
+                let status = error.response ? error.response.status : null;
+                let answer = 'Error';
+                if (status === 415 || status === 400) answer = 'Ошибка';
+                if (status === 401) {
+                    answer = 'Вы не прошли аутентификацию';
+                    localStorage.removeItem("user");
+                }
+                if (status === 404) answer = 'Потеряно соединение';
+                dispatch({
+                    type: SET_ANSWER,
+                    payload: answer,
+                });
+                if (window.location.href !== 'http://localhost:3000/')
+                    window.location = "/"
+            });
     };
 }
 export function signIn(isLogin) {

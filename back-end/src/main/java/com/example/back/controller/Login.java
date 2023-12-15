@@ -1,11 +1,14 @@
 package com.example.back.controller;
 import com.example.back.dto.UserDto;
 import com.example.back.repository.UserRepository;
+import com.example.back.security.JwtTokenUtil;
 import com.example.back.service.ResultManager;
 import com.example.back.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
@@ -36,11 +39,15 @@ public class Login {
     }
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<String> login() {
-  //      resultManager.check(authorization);
+    public ResponseEntity<String> login(@RequestBody UserDto userDto) {
+
+        return userService.authenticate(userDto);
+    }
+    @CrossOrigin
+    @GetMapping("/authorization")
+    public ResponseEntity<String> authorization(){
         return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
-
 
     private ArrayList<String> validateUsername(String username) {
         ArrayList<String> usernameErrors = new ArrayList<>();

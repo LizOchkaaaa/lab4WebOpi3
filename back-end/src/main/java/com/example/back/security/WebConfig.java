@@ -1,5 +1,8 @@
 package com.example.back.security;
+
 import com.example.back.dsl.CustomDsl;
+import com.example.back.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,44 +12,40 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebConfig  {
 
     private final UserDetailsService userDetails;
     private final PasswordEncoder passwordEncoder;
     private final CustomDsl dsl;
+    private final UserRepository userRepository;
+    private final JwtTokenFilter jwtAuthFilter;
 
-    @Autowired
-    public WebConfig(UserDetailsService userDetails, PasswordEncoder passwordEncoder, CustomDsl dsl) {
-        this.userDetails = userDetails;
-        this.passwordEncoder = passwordEncoder;
-        this.dsl = dsl;
 
-    }
 
     @Bean
     public SecurityFilterChain filterChain( HttpSecurity http) throws Exception {
         http.cors().disable().csrf().disable()
-                        .authorizeHttpRequests(auth -> auth
-                                .antMatchers("/",
-                                        "/favicon.png",
-                                        "/static/**",
-                                        "/**/*.json",
-                                        "/**/*.html")
-                                .permitAll()
-                                .antMatchers("/register").permitAll()
-                                .anyRequest().authenticated()
-                        )
+                .authorizeHttpRequests(auth -> auth
+                        .antMatchers("/",
+                                "/favicon.png",
+                                "/static/**",
+                                "/**/*.json",
+                                "/**/*.html")
+                        .permitAll()
+                        .antMatchers("/register", "/login").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .httpBasic().authenticationEntryPoint((request, response, authException) -> response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase()));
-        http.addFilterAfter(new TimeFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         http.apply(dsl);
         return http.build();
     }

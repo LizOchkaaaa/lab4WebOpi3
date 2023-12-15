@@ -46,7 +46,7 @@ export function sendPoint(point) {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
-                  'Authorization': 'Basic ' + localStorage.getItem("user")
+                  'Authorization': localStorage.getItem("user")
             }
         })
             .then(result => {
@@ -62,7 +62,7 @@ export function sendPoint(point) {
                 }
             })
             .catch(error => {
-                let status = error.response.status;
+                let status = error.response.message;
                 let answer = 'Error';
                 if (status === 415 || status === 400 ) answer = 'Ошибка';
                 if (status === 401) {
@@ -89,7 +89,7 @@ export function getPoints() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                  'Authorization': 'Basic ' + localStorage.getItem("user")
+                  'Authorization': localStorage.getItem("user")
             }
         }).then(data => {
             dispatch({

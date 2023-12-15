@@ -2,17 +2,14 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import React, {Component} from "react";
 import StartPage from "./pages/StartPage";
-import {signIn} from "./actions/userAction";
+import {authorization, signIn} from "./actions/userAction";
 import {connect} from 'react-redux';
 
 class App extends Component {
     constructor(props) {
         super(props);
-        if (localStorage.getItem("user") != null && localStorage.getItem("user") !== "undefined") {
-            this.props.setSignIn(true)
-        } else {
-            this.props.setSignIn(false)
-        }
+
+        this.props.authorization();
     }
     render() {
         return <div>
@@ -35,6 +32,7 @@ const mapStateToProps = store => {
 const mapDispatchToProps = dispatch => {
     return {
         setSignIn: flag => dispatch(signIn(flag)),
+        authorization: () => dispatch(authorization())
     }
 };
 
